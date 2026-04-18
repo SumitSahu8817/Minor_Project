@@ -1,129 +1,65 @@
-<!-- <div class="auth-wrapper">
-    <div class="auth-container">
-        <h1 style="color: white; margin-bottom: 30px;">Faculty Portal</h1>
-        
-        <div class="tab-group">
-            <button id="loginTab" onclick="showForm('login')">Login</button>
-            <button id="registerTab" onclick="showForm('register')">Register</button>
-        </div>
-
-        <div id="welcomeMsg">
-            <p style="color: white;">Welcome! Please select an option to continue.</p>
-        </div>
-
-        <form id="loginForm" class="hidden animate-pop">
-            <input type="email" id="loginEmail" placeholder="Email" required class="input-box">
-            <input type="password" id="loginPassword" placeholder="Password" required class="input-box">
-            <button type="submit" class="primary-btn">Sign In</button>
-        </form>
-
-        <form id="registerForm" class="hidden animate-pop">
-            <input type="text" id="regName" placeholder="Full Name" required class="input-box">
-            <input type="email" id="regEmail" placeholder="Email" required class="input-box">
-            <input type="password" id="regPassword" placeholder="Password" required class="input-box">
-            <button type="submit" class="primary-btn">Create Account</button>
-        </form>
-    </div>
-</div>
-
-<script>
-    function showForm(type) {
-        document.getElementById('welcomeMsg').classList.add('hidden');
-        document.getElementById('loginForm').classList.add('hidden');
-        document.getElementById('registerForm').classList.add('hidden');
-        document.getElementById('loginTab').classList.remove('active');
-        document.getElementById('registerTab').classList.remove('active');
-
-        if(type === 'login') {
-            document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('loginTab').classList.add('active');
-        } else {
-            document.getElementById('registerForm').classList.remove('hidden');
-            document.getElementById('registerTab').classList.add('active');
-        }
-    }
-</script> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Portal | Login</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body data-theme="dark"> <div class="auth-wrapper">
-        <div class="auth-container">
-            <h1 class="gradient-text" style="margin-bottom: 30px;">Faculty Portal</h1>
-            
-            <div class="tab-group">
-                <button id="loginTab" onclick="showForm('login')">Login</button>
-                <button id="registerTab" onclick="showForm('register')">Register</button>
-            </div>
-
-            <div id="welcomeMsg">
-                <p style="color: var(--text-primary);">Welcome! Please select an option to continue.</p>
-            </div>
-
-            <form id="loginForm" class="hidden animate-pop">
-                <input type="email" id="loginEmail" placeholder="Email" required class="input-box">
-                <input type="password" id="loginPassword" placeholder="Password" required class="input-box">
-                <button type="submit" class="primary-btn" style="width: 100%; margin-top: 10px;">Sign In</button>
-            </form>
-
-            <form id="registerForm" class="hidden animate-pop">
-                <input type="text" id="regName" placeholder="Full Name" required class="input-box">
-                <input type="email" id="regEmail" placeholder="Email" required class="input-box">
-                <input type="password" id="regPassword" placeholder="Password" required class="input-box">
-                <button type="submit" class="primary-btn" style="width: 100%; margin-top: 10px;">Create Account</button>
-            </form>
+<body style="background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh;">
+    
+    <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px;">
+        <h1 style="text-align: center; margin-bottom: 20px; color: #333;">Faculty Portal</h1>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button id="showLogin" class="primary-btn" style="flex: 1;">Login</button>
+            <button id="showRegister" class="secondary-btn" style="flex: 1;">Register</button>
         </div>
+
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email" required class="input-box">
+            <input type="password" id="loginPassword" placeholder="Password" required class="input-box">
+            <button type="submit" class="primary-btn" style="width: 100%;">Sign In</button>
+        </form>
+
+        <form id="registerForm" style="display: none;">
+            <input type="text" id="regName" placeholder="Full Name" required class="input-box">
+            <input type="email" id="regEmail" placeholder="Email" required class="input-box">
+            <input type="password" id="regPassword" placeholder="Password" required class="input-box">
+            <button type="submit" class="success-btn" style="width: 100%;">Create Account</button>
+        </form>
     </div>
 
     <script src="js/api.js"></script>
     <script>
-        // UI Toggle Logic
-        function showForm(type) {
-            document.getElementById('welcomeMsg').classList.add('hidden');
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('registerForm').classList.add('hidden');
-            document.getElementById('loginTab').classList.remove('active');
-            document.getElementById('registerTab').classList.remove('active');
+        document.getElementById('showLogin').onclick = () => {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        };
+        document.getElementById('showRegister').onclick = () => {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        };
 
-            if(type === 'login') {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('loginTab').classList.add('active');
-            } else {
-                document.getElementById('registerForm').classList.remove('hidden');
-                document.getElementById('registerTab').classList.add('active');
-            }
-        }
-
-        // Backend API Connection Logic
         document.getElementById('loginForm').onsubmit = async (e) => {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const res = await api.post("/auth/login", { email, password });
-            if (res && res.token) {
-                localStorage.setItem("token", res.token);
-                window.location.href = "dashboard.html";
-            } else {
-                alert(res.message || "Login failed! Please check credentials.");
-            }
+            const res = await api.post("/auth/login", {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            });
+            if (res && res.token) { localStorage.setItem("token", res.token); window.location.href = "dashboard.html"; }
+            else alert(res.message || "Login failed!");
         };
 
         document.getElementById('registerForm').onsubmit = async (e) => {
             e.preventDefault();
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const res = await api.post("/auth/register", { name, email, password });
-            if (res && res.token) {
-                localStorage.setItem("token", res.token);
-                window.location.href = "dashboard.html";
-            } else {
-                alert(res.message || "Registration failed!");
-            }
+            const res = await api.post("/auth/register", {
+                name: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value
+            });
+            if (res && res.token) { localStorage.setItem("token", res.token); window.location.href = "dashboard.html"; }
+            else alert(res.message || "Registration failed!");
         };
     </script>
 </body>

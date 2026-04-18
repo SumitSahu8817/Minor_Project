@@ -1,122 +1,59 @@
-/* style.css
 :root {
-    --primary-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --bg-light: #f5f7fa;
-    --bg-dark: #0f172a;
-    --glass: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --text-light: #f8fafc;
-    --text-dark: #1e293b;
+    /* Light Mode Colors */
+    --bg-primary: #f4f7f6;
+    --bg-secondary: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #dddddd;
+    --nav-bg: #ffffff;
+    --card-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    
+    /* Modern Gradients */
+    --primary-grad: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    --success-grad: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --warning-grad: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    --danger-grad: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+    --table-header: #f8f9fa;
 }
 
 [data-theme="dark"] {
-    --bg-primary: var(--bg-dark);
-    --bg-secondary: rgba(30, 41, 59, 0.7);
-    --text-primary: var(--text-light);
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --text-primary: #f0f0f0;
+    --text-secondary: #aaaaaa;
+    --border-color: #333333;
+    --nav-bg: #1a1a1a;
+    --card-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    --table-header: #2c2c2c;
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    transition: all 0.3s ease;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-/* Auth Wrapper to Center Content */
-.auth-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: var(--primary-grad);
-}
+body { background-color: var(--bg-primary); color: var(--text-primary); transition: 0.3s; }
 
-.auth-container {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
-    padding: 40px;
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
-    animation: fadeIn 0.8s ease-out;
-}
+.navbar { background-color: var(--nav-bg); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.container { padding: 30px; max-width: 1000px; margin: 0 auto; }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+button { cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: all 0.3s ease; letter-spacing: 0.5px; }
+button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-.animate-pop {
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+.primary-btn { background: var(--primary-grad); color: white; padding: 12px 20px; width: 100%; }
+.success-btn { background: var(--success-grad); color: white; padding: 10px 15px; }
+.danger-btn { background: var(--danger-grad); color: white; padding: 10px 15px; }
+.info-btn { background: var(--primary-grad); color: white; padding: 8px 10px; flex: 1; }
+.warning-btn { background: var(--warning-grad); color: #fff; padding: 8px 10px; flex: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+.secondary-btn { background: #6c757d; color: white; padding: 8px 15px; }
 
-@keyframes popIn {
-    0% { transform: scale(0.9); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
+.class-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+.class-card { background: var(--bg-secondary); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); transition: 0.3s; }
+.class-card h4 { color: var(--text-primary); font-size: 20px; margin-bottom: 10px; }
+.class-card p { margin-bottom: 15px; font-size: 14px; color: var(--text-secondary); }
 
-/* Tab Switching Logic */
-.tab-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-    background: rgba(0,0,0,0.1);
-    padding: 5px;
-    border-radius: 12px;
-}
+.data-table { width: 100%; border-collapse: collapse; background: var(--bg-secondary); margin-top: 15px; border-radius: 8px; overflow: hidden; box-shadow: var(--card-shadow); }
+.data-table th, .data-table td { padding: 15px; border-bottom: 1px solid var(--border-color); text-align: left; }
+.data-table th { background-color: var(--table-header); color: var(--text-primary); }
 
-.tab-group button {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    background: transparent;
-    color: white;
-    font-weight: 600;
-    transition: 0.3s;
-}
+input, .edit-input, .input-box { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary); color: var(--text-primary); transition: 0.3s; }
+input:focus { outline: none; border-color: #6a11cb; box-shadow: 0 0 5px rgba(106, 17, 203, 0.3); }
 
-.tab-group button.active {
-    background: white;
-    color: #764ba2;
-}
-
-/* Hidden Form Styling */
-.hidden { display: none; }
-
-.primary-btn {
-    background: var(--primary-grad);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.primary-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-/* Toggle Form Style */
-.form-toggle-section {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
-    background: var(--bg-secondary);
-    border-radius: 15px;
-}
-
-.form-toggle-section.show {
-    max-height: 600px;
-    padding: 20px;
-    border: 1px solid var(--border-color);
-} 
+.theme-toggle { position: fixed; bottom: 30px; right: 30px; background: var(--primary-grad); color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 9999; display: flex; justify-content: center; align-items: center; }

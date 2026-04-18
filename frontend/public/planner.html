@@ -1,199 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Syllabus Planner | Faculty Portal</title>
+    <title>Planner</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .ai-header { 
-            background: var(--primary-grad); color: white; padding: 20px; 
-            border-radius: 8px; margin-bottom: 25px; text-align: center; 
-        }
-        #loader { display: none; text-align: center; padding: 20px; font-weight: bold; color: #6a11cb; }
-        .spinner { 
-            border: 4px solid #f3f3f3; border-top: 4px solid #6a11cb; border-radius: 50%; 
-            width: 30px; height: 30px; animation: spin 1s linear infinite; display: inline-block; 
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .planner-controls { background: var(--bg-secondary); padding: 20px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 20px; }
-        .row-done { background-color: #d4edda !important; }
-        .text-done { text-decoration: line-through; color: #6c757d; }
+        #loader { display: none; margin: 15px 0; font-weight: bold; color: #6a11cb; }
     </style>
 </head>
-<body>
-     
-    <button id="themeToggle" class="theme-toggle">🌙</button>
-
+<body style="background: #f4f7f6;">
     <nav class="navbar">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <button class="secondary-btn" onclick="window.location.href='dashboard.html'">← Back</button>
-            <h2>Faculty Planner</h2>
-        </div>
+        <button class="secondary-btn" onclick="window.location.href='dashboard.html'">← Back</button>
+        <h2>Faculty Planner</h2>
     </nav>
-    
+
     <div class="container">
-        <div class="ai-header">
-            <h2>⚡ AI Smart Tracker</h2>
-            <p>Subject: <span id="subjectLabel" style="font-weight:bold;">Loading...</span></p>
-        </div>
-
-        <div class="planner-controls">
-            <label><strong>Syllabus Goals / Extract from PDF:</strong></label>
-            <textarea id="promptInput" class="input-box" style="height: 100px;" placeholder="Describe how you want to divide the topics..."></textarea>
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
+            <h3>Syllabus Planner</h3>
+            <p style="margin-bottom: 15px;">Subject: <strong id="subjectLabel">Loading...</strong> | Days: <strong id="daysDisplay">--</strong></p>
             
-            <p style="margin: 10px 0;">Plan for: <strong id="daysDisplay">--</strong> Days</p>
-            <button class="primary-btn" id="genBtn" onclick="generateSyllabus()">✨ Generate & Save Plan</button>
+            <textarea id="promptInput" class="input-box" placeholder="Write goals here... (e.g., Focus more on practicals)" style="height: 80px;"></textarea>
+            <button class="primary-btn" id="genBtn" onclick="generateSyllabus()">✨ Generate Smart Plan</button>
+            <div id="loader">⏳ AI is processing your syllabus... Please wait.</div>
         </div>
-
-        <div id="loader">
-            <div class="spinner"></div><br>
-            AI is organizing your syllabus into the database...
-        </div>
-
-        <table class="data-table" id="resultTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th style="width: 10%; text-align: center;">Done</th>
-                    <th style="width: 15%;">Day</th>
-                    <th>Topic</th>
-                    <th style="width: 15%;">Action</th>
-                </tr>
-            </thead>
+        
+        <table class="data-table" id="resultTable" style="display:none; background: white;">
+            <thead><tr><th>Done</th><th>Day</th><th>Topic</th><th>Action</th></tr></thead>
             <tbody id="plannerBody"></tbody>
         </table>
     </div>
 
     <script src="js/api.js"></script>
     <script>
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const classId = urlParams.get('class'); // Backend route matches 'classId'
-
+        const classId = new URLSearchParams(window.location.search).get('class');
         let classData = null;
 
-        // 1. Page Load par existing data fetch karo
-        // planner.html ke script mein ye update kar:
-window.onload = async () => {
-    const res = await api.get(`/planner/${classId}`);
-    if (res.success) {
-        // AI Smart Planner ki jagah ab Subject Name likh ke aayega
-        document.getElementById('subjectLabel').innerText = res.subject + " Planner"; 
-        document.getElementById('daysDisplay').innerText = res.num_days;
-        // ... baki ka code
-    }
-};
+        window.onload = async () => {
+            const res = await api.get(`/planner/${classId}`);
+            if (res.success) {
+                classData = res;
+                document.getElementById('subjectLabel').innerText = res.subject;
+                document.getElementById('daysDisplay').innerText = res.num_days;
+                if(res.plan && res.plan.length > 0) renderTable(res.plan);
+            }
+        };
 
         function renderTable(items) {
-            const table = document.getElementById('resultTable');
             const tbody = document.getElementById('plannerBody');
             tbody.innerHTML = '';
-            table.style.display = 'table';
-
-            items.forEach((item, i) => {
-                const row = document.createElement('tr');
-                if (item.is_done) row.className = 'row-done';
-
-                row.innerHTML = `
-                    <td style="text-align: center;">
-                        <input type="checkbox" ${item.is_done ? 'checked' : ''} onchange="toggleDay(${item.day_no})">
-                    </td>
+            document.getElementById('resultTable').style.display = 'table';
+            items.forEach(item => {
+                tbody.innerHTML += `
+                <tr>
+                    <td><input type="checkbox" ${item.is_done ? 'checked' : ''} onchange="toggleDay(${item.day_no})"></td>
                     <td><strong>Day ${item.day_no}</strong></td>
-                    <td>
-                        <input type="text" id="topic_${item.day_no}" class="edit-input ${item.is_done ? 'text-done' : ''}" value="${item.topic}">
-                    </td>
-                    <td>
-                        <button class="success-btn" onclick="updateTopic(${item.day_no})">Save</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
+                    <td><input type="text" id="topic_${item.day_no}" value="${item.topic}" class="input-box" style="margin:0;"></td>
+                    <td><button onclick="updateTopic(${item.day_no})" class="success-btn">Save</button></td>
+                </tr>`;
             });
         }
-
+        
         async function generateSyllabus() {
-            const promptText = document.getElementById('promptInput').value;
-            const loader = document.getElementById('loader');
-            const genBtn = document.getElementById('genBtn');
-
-            loader.style.display = 'block';
-            genBtn.disabled = true;
-
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('genBtn').disabled = true;
             try {
-                // 1. NAYA STEP: Apne backend se securely API Key mango
                 const keyRes = await api.get('/get-ai-key');
-                const SECURE_GROQ_KEY = keyRes.key;
-
-                if (!SECURE_GROQ_KEY) throw new Error("API Key backend mein nahi mili!");
-
-                // 2. Ab AI ko call karo (SECURE_GROQ_KEY use karke)
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: { "Authorization": `Bearer ${SECURE_GROQ_KEY}`, "Content-Type": "application/json" },
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST", headers: { "Authorization": `Bearer ${keyRes.key}`, "Content-Type": "application/json" },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{
-                            role: "user",
-                            content: `Divide this syllabus text into exactly ${classData.num_days} days. Text: ${classData.syllabus_text}. Goal: ${promptText}. Return ONLY a JSON array of strings.`
-                        }],
-                        temperature: 0.2
+                        messages: [{ role: "user", content: `Divide syllabus into ${classData.num_days} days. Text: ${classData.syllabus_text}. Goal: ${document.getElementById('promptInput').value}. Return ONLY JSON array of strings.` }]
                     })
                 });
-
-                const data = await response.json();
-                if (data.error) throw new Error(data.error.message);
-
-                const rawText = data.choices[0].message.content;
-                const jsonMatch = rawText.match(/\[[\s\S]*\]/);
-                
-                if (!jsonMatch) {
-                    throw new Error("AI did not generate a proper syllabus. Please click Generate again.");
-                }
-
-                const topicsArray = JSON.parse(jsonMatch[0]);
-
-                const itemsToSave = topicsArray.map((topic, i) => ({
-                    day_no: i + 1,
-                    topic: topic,
-                    is_done: false
-                }));
-
-                const saveRes = await api.post(`/planner/${classId}/save`, { items: itemsToSave });
-                if (saveRes.success) {
-                    location.reload();
-                } else {
-                    throw new Error(saveRes.message);
-                }
-            } catch (err) {
-                alert("Error: " + err.message); 
-            } finally {
-                loader.style.display = 'none';
-                genBtn.disabled = false;
-            }
+                const data = await res.json();
+                const topicsArray = JSON.parse(data.choices[0].message.content.match(/\[[\s\S]*\]/)[0]);
+                const items = topicsArray.map((t, i) => ({ day_no: i+1, topic: t, is_done: false }));
+                await api.post(`/planner/${classId}/save`, { items });
+                location.reload();
+            } catch(e) { alert("Error generating plan."); }
+            finally { document.getElementById('loader').style.display = 'none'; document.getElementById('genBtn').disabled = false; }
         }
 
-        async function toggleDay(dayNo) {
-            const res = await api.patch(`/planner/${classId}/toggle/${dayNo}`);
-            if (res.success) location.reload();
-        }
-
+        async function toggleDay(dayNo) { await api.patch(`/planner/${classId}/toggle/${dayNo}`); location.reload(); }
         async function updateTopic(dayNo) {
-            const newTopic = document.getElementById(`topic_${dayNo}`).value;
-            const res = await api.patch(`/planner/${classId}/update/${dayNo}`, { topic: newTopic });
-            if (res.success) alert("Topic Updated!");
-        }
-
-        // Theme Toggle Logic
-        const themeBtn = document.getElementById('themeToggle');
-        themeBtn.onclick = () => {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            localStorage.setItem('theme', isDark ? 'light' : 'dark');
-            themeBtn.innerText = isDark ? '🌙' : '☀️';
-        };
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
-            themeBtn.innerText = '☀️';
+            await api.patch(`/planner/${classId}/update/${dayNo}`, { topic: document.getElementById(`topic_${dayNo}`).value });
+            alert("Topic Updated!");
         }
     </script>
 </body>
