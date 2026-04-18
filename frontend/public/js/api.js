@@ -1,4 +1,7 @@
-const API_URL = "/api"; // Deployment safe URL
+// Ye code automatically detect karega ki tu local par hai ya Render par (Live)
+const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+    ? "http://localhost:3000/api" 
+    : "/api"; // Deployment safe URL
 
 const api = {
     // Helper function: Har request ke liye taaza headers taiyar karne ke liye
