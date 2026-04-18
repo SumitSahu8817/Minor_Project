@@ -59,3 +59,35 @@ const api = {
         return this.handleResponse(res);
     }
 };
+// ==========================================
+// --- GLOBAL DAY/NIGHT THEME LOGIC ---
+// ==========================================
+
+// HTML mein button ka ID 'themeToggle' hona chahiye
+const themeBtn = document.getElementById('themeToggle');
+const currentTheme = localStorage.getItem('theme') || 'light';
+
+// 1. Page load hone par purana theme check karo aur lagao
+if (currentTheme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+    if (themeBtn) themeBtn.innerText = '☀️';
+}
+
+// 2. Button click karne par theme badlo aur save karo
+if (themeBtn) {
+    themeBtn.onclick = () => {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        
+        if (isDark) {
+            // Dark se Light karo
+            document.body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+            themeBtn.innerText = '🌙';
+        } else {
+            // Light se Dark karo
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            themeBtn.innerText = '☀️';
+        }
+    };
+}
