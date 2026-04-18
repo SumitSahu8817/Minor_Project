@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "/api"; // Deployment safe URL
 
 const api = {
     // Helper function: Har request ke liye taaza headers taiyar karne ke liye
@@ -59,3 +59,32 @@ const api = {
         return this.handleResponse(res);
     }
 };
+
+// ==========================================
+// --- GLOBAL DAY/NIGHT THEME LOGIC ---
+// ==========================================
+
+const themeBtn = document.getElementById('globalThemeToggle');
+const currentTheme = localStorage.getItem('theme') || 'light';
+
+// Page load hone par purana theme lagao
+if (currentTheme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+    if(themeBtn) themeBtn.innerText = '☀️';
+}
+
+// Button click karne par theme change karo
+if(themeBtn) {
+    themeBtn.onclick = () => {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+            themeBtn.innerText = '🌙';
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            themeBtn.innerText = '☀️';
+        }
+    };
+}
