@@ -74,23 +74,16 @@
         let classData = null;
 
         // 1. Page Load par existing data fetch karo
-        window.onload = async () => {
-            if (!classId) return window.location.href = 'dashboard.html';
-            
-            const res = await api.get(`/planner/${classId}`);
-            if (res.success) {
-                classData = res;
-                document.getElementById('subjectLabel').innerText = res.num_days + " Days Plan";
-                document.getElementById('daysDisplay').innerText = res.num_days;
-                
-                if (res.items && res.items.length > 0) {
-                    renderTable(res.items);
-                }
-            } else {
-                alert("Session expired. Please login again.");
-                window.location.href = 'index.html';
-            }
-        };
+        // planner.html ke script mein ye update kar:
+window.onload = async () => {
+    const res = await api.get(`/planner/${classId}`);
+    if (res.success) {
+        // AI Smart Planner ki jagah ab Subject Name likh ke aayega
+        document.getElementById('subjectLabel').innerText = res.subject + " Planner"; 
+        document.getElementById('daysDisplay').innerText = res.num_days;
+        // ... baki ka code
+    }
+};
 
         function renderTable(items) {
             const table = document.getElementById('resultTable');

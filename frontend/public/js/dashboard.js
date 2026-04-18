@@ -120,3 +120,7 @@ function resetUI() {
 
 // Page start hote hi classes load karna
 loadClasses();
+function toggleAddClassForm() {
+    const formSection = document.getElementById('addClassSection');
+    formSection.classList.toggle('show');
+}
