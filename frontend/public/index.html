@@ -1,4 +1,4 @@
-<div class="auth-wrapper">
+<!-- <div class="auth-wrapper">
     <div class="auth-container">
         <h1 style="color: white; margin-bottom: 30px;">Faculty Portal</h1>
         
@@ -42,4 +42,89 @@
             document.getElementById('registerTab').classList.add('active');
         }
     }
-</script>
+</script> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Portal | Login</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-theme="dark"> <div class="auth-wrapper">
+        <div class="auth-container">
+            <h1 class="gradient-text" style="margin-bottom: 30px;">Faculty Portal</h1>
+            
+            <div class="tab-group">
+                <button id="loginTab" onclick="showForm('login')">Login</button>
+                <button id="registerTab" onclick="showForm('register')">Register</button>
+            </div>
+
+            <div id="welcomeMsg">
+                <p style="color: var(--text-primary);">Welcome! Please select an option to continue.</p>
+            </div>
+
+            <form id="loginForm" class="hidden animate-pop">
+                <input type="email" id="loginEmail" placeholder="Email" required class="input-box">
+                <input type="password" id="loginPassword" placeholder="Password" required class="input-box">
+                <button type="submit" class="primary-btn" style="width: 100%; margin-top: 10px;">Sign In</button>
+            </form>
+
+            <form id="registerForm" class="hidden animate-pop">
+                <input type="text" id="regName" placeholder="Full Name" required class="input-box">
+                <input type="email" id="regEmail" placeholder="Email" required class="input-box">
+                <input type="password" id="regPassword" placeholder="Password" required class="input-box">
+                <button type="submit" class="primary-btn" style="width: 100%; margin-top: 10px;">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // UI Toggle Logic
+        function showForm(type) {
+            document.getElementById('welcomeMsg').classList.add('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('registerTab').classList.remove('active');
+
+            if(type === 'login') {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('loginTab').classList.add('active');
+            } else {
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('registerTab').classList.add('active');
+            }
+        }
+
+        // Backend API Connection Logic
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const res = await api.post("/auth/login", { email, password });
+            if (res && res.token) {
+                localStorage.setItem("token", res.token);
+                window.location.href = "dashboard.html";
+            } else {
+                alert(res.message || "Login failed! Please check credentials.");
+            }
+        };
+
+        document.getElementById('registerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const res = await api.post("/auth/register", { name, email, password });
+            if (res && res.token) {
+                localStorage.setItem("token", res.token);
+                window.location.href = "dashboard.html";
+            } else {
+                alert(res.message || "Registration failed!");
+            }
+        };
+    </script>
+</body>
+</html>
