@@ -1,87 +1,122 @@
-/* =========================================
-   MASTER CSS - FACULTY PORTAL
-========================================= */
+/* style.css
 :root {
     --primary-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --danger-grad: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     --bg-light: #f5f7fa;
     --bg-dark: #0f172a;
     --glass: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
     --text-light: #f8fafc;
     --text-dark: #1e293b;
-    --border-color: rgba(0,0,0,0.1);
 }
 
 [data-theme="dark"] {
     --bg-primary: var(--bg-dark);
     --bg-secondary: rgba(30, 41, 59, 0.7);
     --text-primary: var(--text-light);
-    --border-color: rgba(255,255,255,0.1);
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: var(--bg-primary, var(--bg-light));
-    color: var(--text-primary, var(--text-dark));
+    margin: 0;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     transition: all 0.3s ease;
 }
 
-/* NAVBAR */
-.navbar {
-    background: var(--bg-secondary);
-    backdrop-filter: blur(10px);
-    padding: 15px 30px;
+/* Auth Wrapper to Center Content */
+.auth-wrapper {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
+    min-height: 100vh;
+    background: var(--primary-grad);
 }
 
-.container { padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
-
-/* BUTTONS */
-button, .btn {
-    cursor: pointer; border: none; border-radius: 8px; font-weight: bold;
-    transition: all 0.3s ease; padding: 10px 20px; display: inline-block; text-decoration: none;
-}
-button:hover, .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-.primary-btn { background: var(--primary-grad); color: white; }
-.danger-btn { background: var(--danger-grad); color: white; }
-
-/* INPUTS */
-.input-box {
-    width: 100%; padding: 12px; border: 1px solid var(--border-color);
-    border-radius: 8px; background: transparent; color: var(--text-primary);
-    margin-bottom: 15px;
+.auth-container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
 }
 
-/* TOGGLE FORM (DASHBOARD) */
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pop {
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Tab Switching Logic */
+.tab-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    background: rgba(0,0,0,0.1);
+    padding: 5px;
+    border-radius: 12px;
+}
+
+.tab-group button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.tab-group button.active {
+    background: white;
+    color: #764ba2;
+}
+
+/* Hidden Form Styling */
+.hidden { display: none; }
+
+.primary-btn {
+    background: var(--primary-grad);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.primary-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Toggle Form Style */
 .form-toggle-section {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease-out, padding 0.3s ease;
+    transition: max-height 0.5s ease-out;
     background: var(--bg-secondary);
     border-radius: 15px;
 }
+
 .form-toggle-section.show {
     max-height: 600px;
     padding: 20px;
     border: 1px solid var(--border-color);
-    margin-bottom: 30px;
-}
-
-/* CLASS GRID & CARDS */
-.class-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
-}
-.class-card {
-    background: var(--bg-secondary);
-    padding: 25px; border-radius: 16px;
-    border: 1px solid var(--border-color);
-    transition: transform 0.3s;
-}
-.class-card:hover { transform: translateY(-5px); }
-.class-card h4 { font-size: 22px; margin-bottom: 10px; }
+} 
